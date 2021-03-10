@@ -38,6 +38,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+import io
 from collections  import OrderedDict
 from functools    import partial
 
@@ -272,3 +273,13 @@ def unmap_pixels(x: torch.Tensor) -> torch.Tensor:
 
   return torch.clamp((x - logit_laplace_eps) / (1 - 2 * logit_laplace_eps), 0, 1)
 
+def load_model(path: str, device: torch.device = None) -> nn.Module:
+    if path.startswith('http://') or path.startswith('https://'):
+        resp = requests.get(path)
+        resp.raise_for_status()
+            
+        with io.BytesIO(resp.content) as buf:
+            return torch.load(buf, map_location=device)
+    else:
+        with open(path, 'rb') as f:
+            return torch.load(f, map_location=device)
