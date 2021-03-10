@@ -39,6 +39,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 import io
+import requests
 from collections  import OrderedDict
 from functools    import partial
 
